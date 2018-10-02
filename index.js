@@ -1,16 +1,17 @@
-var os = require('os');
 var http = require('http');
+var url = require('url');
 
-
-console.log(os.hostname());
-console.log(os.type());
-console.log(os.platform());
-console.log(os.arch())
-
-function responseHandler(req,res) {
-    res.writeHead(200,{'Content-Type':'text/plain'});
-    res.end('Hello World\n Greeting from Osman');
-};
-http.createServer(responseHandler).listen(1337,'127.0.0.1');
-
+function responseHandler(req, res) {
+var queryData = url.parse(req.url, true).query;
+console.log(queryData);
+res.writeHead(200, {"Content-Type": "text/plain"});
+if (queryData.name) {
+// user told us their name in the GET request, ex: http://localhost:1337/?name=Tom
+res.end('Hello ' + queryData.name + '\n');
+} else {
+res.end("Hello World\n");
+}
+}
+var server = http.createServer(responseHandler);
+server.listen(1337);
 console.log('Server running at http://127.0.0.1:1337/');
